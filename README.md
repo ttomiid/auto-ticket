@@ -20,8 +20,6 @@ Todo (pestañas, etiquetas de severidad, etiquetas de acciones) queda guardado e
 
 ## Demo
 
-Una vez publicado con GitHub Pages (ver más abajo), la demo queda disponible en:
-
 ```
 https://ttomiid.github.io/auto-ticket/
 ```
