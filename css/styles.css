@@ -68,12 +68,100 @@ body {
   font-size: 13px;
 }
 
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 .status-pill {
   font-size: 12px;
   color: var(--text-dim);
   border: 1px solid var(--border);
   border-radius: 999px;
   padding: 4px 12px;
+}
+
+/* ---------- Tab bar (alertas abiertas) ---------- */
+
+.tab-bar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 20px;
+  background: var(--panel-alt);
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--text-dim);
+  padding: 12px 6px;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 0.15s ease;
+}
+
+.tab:hover {
+  color: var(--text);
+}
+
+.tab[aria-selected="true"] {
+  color: var(--text);
+  border-bottom-color: var(--accent);
+}
+
+.tab-close {
+  color: var(--text-faint);
+  font-size: 14px;
+  line-height: 1;
+  padding: 2px;
+  border-radius: 3px;
+}
+
+.tab-close:hover {
+  color: var(--sev-critica);
+}
+
+.tab-add-btn {
+  background: none;
+  border: none;
+  color: var(--text-faint);
+  font-size: 18px;
+  line-height: 1;
+  padding: 10px 10px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.tab-add-btn:hover {
+  color: var(--accent);
+}
+
+.tab-rename-input {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--accent);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 0;
+  width: 140px;
+}
+
+.tab-rename-input:focus {
+  outline: none;
 }
 
 /* ---------- Layout ---------- */
@@ -118,8 +206,7 @@ body {
 }
 
 .text-input,
-.text-area,
-.select-input {
+.text-area {
   width: 100%;
   background: var(--panel);
   border: 1px solid var(--border);
@@ -138,36 +225,30 @@ body {
 }
 
 .text-input:focus,
-.text-area:focus,
-.select-input:focus {
+.text-area:focus {
   outline: none;
   border-color: var(--accent);
   box-shadow: 0 0 0 3px rgba(124, 156, 255, 0.18);
 }
 
-.select-input {
-  appearance: none;
-  background-image: linear-gradient(45deg, transparent 50%, var(--text-dim) 50%),
-    linear-gradient(135deg, var(--text-dim) 50%, transparent 50%);
-  background-position: calc(100% - 18px) center, calc(100% - 13px) center;
-  background-size: 5px 5px, 5px 5px;
-  background-repeat: no-repeat;
-}
+/* ---------- Chip groups (severidad, acciones) ---------- */
 
-/* ---------- Severity buttons ---------- */
-
-.severity-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
+.chip-group {
+  display: flex;
+  flex-wrap: wrap;
   gap: 8px;
+  margin-bottom: 10px;
 }
 
-.sev-btn {
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   background: var(--panel);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   color: var(--text-dim);
-  padding: 10px 6px;
+  padding: 8px 12px;
   font-family: var(--font-ui);
   font-size: 13px;
   font-weight: 500;
@@ -176,19 +257,78 @@ body {
   transition: all 0.15s ease;
 }
 
-.sev-btn:hover {
+.chip:hover {
   color: var(--text);
 }
 
-.sev-btn[aria-checked="true"] {
+.chip[aria-checked="true"],
+.chip[aria-pressed="true"] {
   color: var(--text);
   background: var(--panel-alt);
 }
 
-.sev-baja[aria-checked="true"] { border-bottom-color: var(--sev-baja); }
-.sev-media[aria-checked="true"] { border-bottom-color: var(--sev-media); }
-.sev-alta[aria-checked="true"] { border-bottom-color: var(--sev-alta); }
-.sev-critica[aria-checked="true"] { border-bottom-color: var(--sev-critica); }
+/* Colores semánticos: se aplican por nombre, sin importar si la etiqueta es la
+   original o fue agregada por el usuario (ej. si alguien vuelve a crear "Alta"). */
+.chip.sev-baja[aria-checked="true"] { border-bottom-color: var(--sev-baja); }
+.chip.sev-media[aria-checked="true"] { border-bottom-color: var(--sev-media); }
+.chip.sev-alta[aria-checked="true"] { border-bottom-color: var(--sev-alta); }
+.chip.sev-critica[aria-checked="true"] { border-bottom-color: var(--sev-critica); }
+
+.chip:not(.sev-baja):not(.sev-media):not(.sev-alta):not(.sev-critica)[aria-checked="true"],
+.chip:not(.sev-baja):not(.sev-media):not(.sev-alta):not(.sev-critica)[aria-pressed="true"] {
+  border-bottom-color: var(--accent);
+}
+
+.chip-remove {
+  color: var(--text-faint);
+  font-size: 14px;
+  line-height: 1;
+  padding: 0 2px;
+}
+
+.chip-remove:hover {
+  color: var(--sev-critica);
+}
+
+.chip-add-row {
+  display: flex;
+  gap: 8px;
+}
+
+.chip-add-input {
+  flex: 1;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  padding: 8px 12px;
+  font-family: var(--font-ui);
+  font-size: 13px;
+}
+
+.chip-add-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(124, 156, 255, 0.18);
+}
+
+.chip-add-btn {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-dim);
+  padding: 8px 14px;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.chip-add-btn:hover {
+  color: var(--text);
+  border-color: var(--accent);
+}
 
 /* ---------- Reset button ---------- */
 
@@ -318,4 +458,60 @@ body {
 :focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
+}
+
+/* ---------- Reporte imprimible (exportar turno a PDF) ---------- */
+
+.print-report {
+  display: none;
+}
+
+.print-report-header h1 {
+  font-size: 20px;
+  margin: 0 0 4px;
+}
+
+.print-report-header p {
+  font-size: 13px;
+  color: #444;
+  margin: 0 0 24px;
+}
+
+.ticket-block {
+  margin-bottom: 28px;
+}
+
+.ticket-block h2 {
+  font-size: 14px;
+  margin: 0 0 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #ccc;
+}
+
+.ticket-block pre {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+  margin: 0;
+}
+
+@media print {
+  body.printing > *:not(.print-report) {
+    display: none !important;
+  }
+
+  body.printing {
+    background: #fff;
+  }
+
+  body.printing .print-report {
+    display: block;
+    color: #111;
+  }
+
+  .ticket-block {
+    page-break-inside: avoid;
+  }
 }

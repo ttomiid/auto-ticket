@@ -17,8 +17,16 @@
       <span class="topbar-title">SOC Ticket Composer</span>
       <span class="topbar-subtitle">Escalamiento a L2</span>
     </div>
-    <span class="status-pill" id="statusPill">Borrador</span>
+    <div class="topbar-actions">
+      <button type="button" class="action-btn action-btn-ghost" id="exportShiftBtn">Exportar turno (PDF)</button>
+      <span class="status-pill" id="statusPill">Borrador</span>
+    </div>
   </header>
+
+  <nav class="tab-bar" id="tabBar" role="tablist" aria-label="Alertas abiertas">
+    <!-- las pestañas se generan por JS -->
+    <button type="button" class="tab-add-btn" id="addTabBtn" title="Nueva alerta" aria-label="Nueva alerta">+</button>
+  </nav>
 
   <main class="layout">
 
@@ -26,11 +34,10 @@
 
       <div class="field-group">
         <label class="field-label">Severidad</label>
-        <div class="severity-grid" role="radiogroup" aria-label="Severidad">
-          <button type="button" class="sev-btn sev-baja" data-value="Baja" role="radio" aria-checked="false">Baja</button>
-          <button type="button" class="sev-btn sev-media" data-value="Media" role="radio" aria-checked="false">Media</button>
-          <button type="button" class="sev-btn sev-alta" data-value="Alta" role="radio" aria-checked="true">Alta</button>
-          <button type="button" class="sev-btn sev-critica" data-value="Crítica" role="radio" aria-checked="false">Crítica</button>
+        <div class="chip-group" id="severityGroup" role="radiogroup" aria-label="Severidad"></div>
+        <div class="chip-add-row">
+          <input type="text" id="severityAddInput" class="chip-add-input" placeholder="Agregar nivel personalizado" maxlength="40" />
+          <button type="button" class="chip-add-btn" id="severityAddBtn">Agregar</button>
         </div>
       </div>
 
@@ -55,18 +62,15 @@
       </div>
 
       <div class="field-group">
-        <label class="field-label" for="recommendation">Acción recomendada para L2</label>
-        <select id="recommendation" class="select-input">
-          <option value="">Sin especificar</option>
-          <option>Aislar host de la red</option>
-          <option>Deshabilitar cuenta comprometida</option>
-          <option>Forzar reset de credenciales</option>
-          <option>Bloquear IOC en perímetro</option>
-          <option>Escalar a IR / respuesta a incidentes</option>
-        </select>
+        <label class="field-label">Acciones recomendadas para L2 <span class="field-hint">(elegí una o varias)</span></label>
+        <div class="chip-group" id="actionsGroup" role="group" aria-label="Acciones recomendadas"></div>
+        <div class="chip-add-row">
+          <input type="text" id="actionAddInput" class="chip-add-input" placeholder="Agregar acción personalizada" maxlength="80" />
+          <button type="button" class="chip-add-btn" id="actionAddBtn">Agregar</button>
+        </div>
       </div>
 
-      <button type="button" class="reset-btn" id="resetBtn">Limpiar formulario</button>
+      <button type="button" class="reset-btn" id="resetBtn">Limpiar esta alerta</button>
 
     </section>
 
@@ -85,8 +89,11 @@
   </main>
 
   <footer class="page-footer">
-    Los datos completados no se envían a ningún servidor — todo se genera en tu navegador.
+    Los datos completados no se envían a ningún servidor — todo se guarda solo en tu navegador (pestañas, etiquetas y notas incluidas).
   </footer>
+
+  <!-- Solo visible al imprimir / exportar a PDF: se arma dinámicamente con todas las pestañas -->
+  <div class="print-report" id="printReport" aria-hidden="true"></div>
 
   <script src="js/app.js"></script>
 </body>
